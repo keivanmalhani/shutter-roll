@@ -24,5 +24,11 @@ shutter-roll = "shutter_roll.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+# The suite imports helpers as `from tests.conftest import ...`, which needs the
+# repo root on sys.path. `python -m pytest` adds the current directory for you
+# and the bare `pytest` console script does not, and the workflow runs the bare
+# one, so CI failed with collection errors and zero tests executed while every
+# hand run looked green. Setting it here means both invocations behave the same.
 [tool.pytest.ini_options]
+pythonpath = ["."]
 testpaths = ["tests"]
