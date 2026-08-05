@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shutter-roll"
+version = "0.1.0"
+description = "Inject film stock, camera, ISO, roll and frame metadata into scanned negatives, with contact sheets."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Keivan Malhani" }]
+requires-python = ">=3.11"
+keywords = ["film-photography", "exif", "metadata", "scanning", "analog", "lightroom"]
+dependencies = [
+    "pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+shutter-roll = "shutter_roll.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
