@@ -4,8 +4,6 @@
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 
-English | [Espanol](README.es.md)
-
 ![shutter-roll demo: init a roll file, plan the tags, apply them, render the contact sheet](docs/demo.gif)
 
 Put the shooting story back into scanned film. Scans come home with no film stock, no camera, no ISO, and the scan date sitting where the shoot date belongs, so Lightroom files your July roll under October. shutter-roll takes a folder of scans from one roll plus a six-line description and injects the real metadata into every frame, then renders a contact sheet. Local only, backups by default.
