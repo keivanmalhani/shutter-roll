@@ -51,6 +51,41 @@ class TestRollFile:
         roll = load_roll(tmp_path, {"stock": "X", "camera": "Holga"})
         assert roll.make_model == ("Holga", "Holga")
 
+    def test_a_blank_value_line_falls_back_instead_of_crashing(self, tmp_path):
+        """roll.txt is written by hand, so 'iso:' with nothing after it is the ordinary
+        typo. parse_roll_text drops the empty value, so ISO simply falls back to unset.
+
+        Removing that `if value:` guard stores '' instead, and load_roll then raises
+        RollError "ISO must be a number, got ''." on a file a person would call blank.
+        All 31 tests passed with the guard gone: no test had a key with an empty value.
+        """
+        (tmp_path / "roll.txt").write_text(
+            "stock: Gold 200\niso:\nlens:\n", encoding="utf-8"
+        )
+        roll = load_roll(tmp_path)
+        assert roll.stock == "Gold 200"
+        assert roll.iso is None
+        assert roll.lens is None
+
+    def test_the_shipped_template_loads_with_its_blank_notes_line(self, tmp_path):
+        """The template write_template writes ends in a bare 'notes:' line, so the
+        blank-value path is on the tool's own happy path, not just in a typo."""
+        write_template(tmp_path)
+        assert "\nnotes:" in (tmp_path / "roll.txt").read_text()
+        roll = load_roll(tmp_path)
+        assert roll.notes is None
+        assert roll.extras == {}
+
+    def test_a_value_that_is_present_still_lands(self, tmp_path):
+        """The negative half: without it the two tests above are satisfied by a parser
+        that drops every value."""
+        (tmp_path / "roll.txt").write_text(
+            "stock: Gold 200\niso: 200\nnotes: pushed one stop\n", encoding="utf-8"
+        )
+        roll = load_roll(tmp_path)
+        assert roll.iso == 200
+        assert roll.notes == "pushed one stop"
+
     def test_template_writes_once(self, tmp_path):
         target = write_template(tmp_path)
         assert target.read_text().startswith("#")
